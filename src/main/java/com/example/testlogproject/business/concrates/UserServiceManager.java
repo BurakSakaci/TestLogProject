@@ -5,6 +5,7 @@ import com.example.testlogproject.business.constants.testLog;
 import com.example.testlogproject.business.dtos.UserDto;
 import com.example.testlogproject.business.requests.create.CreateUserRequest;
 import com.example.testlogproject.business.requests.update.UpdateUserRequest;
+import com.example.testlogproject.core.exceptions.BusinessException;
 import com.example.testlogproject.core.utilities.mapping.ModelMapperService;
 import com.example.testlogproject.core.utilities.results.DataResult;
 import com.example.testlogproject.core.utilities.results.Result;
@@ -33,6 +34,7 @@ public class UserServiceManager implements UserService {
     @testLog
     @Override
     public DataResult<List<UserDto>> list(String transactionId) {
+
         List<UserDto> userDtos = userListMapper();
         if (transactionId.isEmpty()){
             return new SuccessDataResult<>(userDtos, "Veri Listelendi");
@@ -63,14 +65,16 @@ public class UserServiceManager implements UserService {
 
     @testLog
     @Override
-    public Result deleteUserById(Integer id) {
+    public Result deleteUserById(Integer id) throws BusinessException {
+        checkIfUserExistsBy(id);
         this.userRepository.deleteById(id);
         return new SuccessResult("Kullanıcı silindi");
     }
 
     @testLog
     @Override
-    public Result updateUser(UpdateUserRequest updateUserRequest) {
+    public Result updateUser(UpdateUserRequest updateUserRequest) throws BusinessException {
+        checkIfUserExistsBy(updateUserRequest.getUserId());
         User user = this.modelMapperService.forRequest().map(updateUserRequest, User.class);
         this.userRepository.save(user);
         return new SuccessResult("Kullanıcı güncellendi");
@@ -84,9 +88,18 @@ public class UserServiceManager implements UserService {
 
         for (int i = 0; i < userDtos.size(); i++) {
             userDtos.get(i).setTransactionalId(randomIdGenerator());
+            users.get(i).setTransactionalId(randomIdGenerator());
         }
         return userDtos;
     }
+
+
+    private void checkIfUserExistsBy(Integer id) throws BusinessException {
+        if (!this.userRepository.existsById(id)){
+            throw new BusinessException("Kullanıcı Mevcut değil");
+        }
+    }
+
 
     public static String randomIdGenerator(){
         UUID uuid = UUID.randomUUID();

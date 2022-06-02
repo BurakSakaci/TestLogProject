@@ -5,6 +5,7 @@ import com.example.testlogproject.business.constants.testLog;
 import com.example.testlogproject.business.dtos.UserDto;
 import com.example.testlogproject.business.requests.create.CreateUserRequest;
 import com.example.testlogproject.business.requests.update.UpdateUserRequest;
+import com.example.testlogproject.core.exceptions.BusinessException;
 import com.example.testlogproject.core.utilities.results.DataResult;
 import com.example.testlogproject.core.utilities.results.Result;
 import com.example.testlogproject.entities.User;
@@ -40,12 +41,12 @@ public class UserController {
     }
 
     @DeleteMapping("/deleteUserById/{id}")
-    public Result deleteUserById(@PathVariable Integer id){
+    public Result deleteUserById(@PathVariable Integer id) throws BusinessException {
         return this.userService.deleteUserById(id);
     }
 
     @PutMapping("/updateUser")
-    public Result updateUser(@RequestBody UpdateUserRequest updateUserRequest){
+    public Result updateUser(@RequestBody UpdateUserRequest updateUserRequest) throws BusinessException {
         return this.userService.updateUser(updateUserRequest);
     }
 

@@ -18,9 +18,6 @@ public class User {
     @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "transactional_id")
-    private String transactionalId;
-
     @Column(name = "user_first_name")
     private String userFirstName;
 

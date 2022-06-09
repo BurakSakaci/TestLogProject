@@ -88,7 +88,6 @@ public class UserServiceManager implements UserService {
 
         for (int i = 0; i < userDtos.size(); i++) {
             userDtos.get(i).setTransactionalId(randomIdGenerator());
-            users.get(i).setTransactionalId(randomIdGenerator());
         }
         return userDtos;
     }
